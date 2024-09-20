@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Registro de Mantenimiento - Cortadoras</title>
+    <link rel="stylesheet" href="styles.css"> 
+    <style>
+        .logo-container {
+            position: center;
+            top: 10px;
+            left: 10px;
+            z-index: 1000;
+        }
+        .logo{
+            width: 100px;
+            height: auto;
+
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+            background-image: url('corte.webp');
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            filter: contrast(1.2);
+            color: white;
+            height: 100vh;
+            
+        }
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .container {
+            position: relative;
+            z-index: 2;
+            padding: 120px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px 40px 40px 40px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+        }
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        label {
+            flex: 1 1 200px;
+            display: flex;
+            flex-direction: column;
+            font-weight: bold;
+            color: #555;
+        }
+        input, textarea, button {
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        button {
+            background-color: #28a745;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            flex: 1 1 100%;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 40px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+            color: #333;
+        }
+        th {
+            background-color: #f8f8f8;
+        }
+        tr:nth-child(even){
+            background-color: #f9f9f9;
+        }
+        .delete-btn {
+            background-color: #dc3545;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+        @media (max-width: 600px) {
+            form {
+                flex-direction: column;
+            }
+            label {
+                flex: 1 1 100%;
+            }
+            button {
+                flex: 1 1 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Registro de Mantenimiento - Cortadoras</h1>
+    <nav><center>
+        <ul>
+            <li><a href="index.html">Inicio</a></li>
+            <li><a href="extruder.html">Extruder</a></li>
+        </center>
+        </ul>
+        </nav>
+
+     
+        <form id="maintenanceForm">
+            <label>
+                Número de Cortadora:
+                <input type="number" id="numeroMaquina" required>
+            </label>
+            <label>
+                Descripción:
+                <textarea id="descripcion" required></textarea>
+            </label>
+            <label>
+                Insumos Necesarios:
+                <textarea id="insumos" required></textarea>
+            </label>
+            <label>
+                Suministros Necesarios:
+                <textarea id="suministros" required></textarea>
+            </label>
+            <label>
+                Fecha:
+                <input type="date" id="fecha" required>
+            </label>
+            <label>
+                Costo:
+                <input type="number" id="costo" step="0.01" required>
+            </label>
+            <button type="submit">Guardar Registro</button>
+        </form>
+
+        <table id="recordsTable">
+            <thead>
+                <tr>
+                    <th>Número de Cortadora</th>
+                    <th>Descripción</th>
+                    <th>Insumos Necesarios</th>
+                    <th>Suministros Necesarios</th>
+                    <th>Fecha</th>
+                    <th>Costo</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('maintenanceForm');
+            const tableBody = document.querySelector('#recordsTable tbody');
+
+            let records = JSON.parse(localStorage.getItem('maintenanceRecordsCortadoras')) || [];
+
+            function renderRecords() {
+                tableBody.innerHTML = '';
+                records.forEach((record, index) => {
+                    const row = document.createElement('tr');
+
+                    const numeroMaquinaCell = document.createElement('td');
+                    numeroMaquinaCell.textContent = record.numeroMaquina;
+                    row.appendChild(numeroMaquinaCell);
+
+                    const descripcionCell = document.createElement('td');
+                    descripcionCell.textContent = record.descripcion;
+                    row.appendChild(descripcionCell);
+
+                    const insumosCell = document.createElement('td');
+                    insumosCell.textContent = record.insumos;
+                    row.appendChild(insumosCell);
+
+                    const suministrosCell = document.createElement('td');
+                    suministrosCell.textContent = record.suministros;
+                    row.appendChild(suministrosCell);
+
+                    const fechaCell = document.createElement('td');
+                    fechaCell.textContent = record.fecha;
+                    row.appendChild(fechaCell);
+
+                    const costoCell = document.createElement('td');
+                    costoCell.textContent = (parseFloat(record.costo).toFixed(2));
+                    row.appendChild(costoCell);
+
+                    const actionsCell = document.createElement('td');
+                    const deleteBtn = document.createElement('button');
+                    deleteBtn.textContent = 'Eliminar';
+                    deleteBtn.classList.add('delete-btn');
+                    deleteBtn.onclick = () => {
+                        deleteRecord(index);
+                    };
+                    actionsCell.appendChild(deleteBtn);
+                    row.appendChild(actionsCell);
+
+                    tableBody.appendChild(row);
+                });
+            }
+
+            function deleteRecord(index) {
+                records.splice(index, 1);
+                localStorage.setItem('maintenanceRecordsCortadoras', JSON.stringify(records));
+                renderRecords();
+            }
+
+            renderRecords();
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+
+                const numeroMaquina = document.getElementById('numeroMaquina').value.trim();
+                const descripcion = document.getElementById('descripcion').value.trim();
+                const insumos = document.getElementById('insumos').value.trim();
+                const suministros = document.getElementById('suministros').value.trim();
+                const fecha = document.getElementById('fecha').value;
+                const costo = document.getElementById('costo').value.trim();
+
+                if (!numeroMaquina || !descripcion || !insumos || !suministros || !fecha || !costo) {
+                    alert('Por favor, completa todos los campos.');
+                    return;
+                }
+
+                const newRecord = {
+                    numeroMaquina,
+                    descripcion,
+                    insumos,
+                    suministros,
+                    fecha,
+                    costo
+                };
+
+                records.push(newRecord);
+                localStorage.setItem('maintenanceRecordsCortadoras', JSON.stringify(records));
+
+                renderRecords();
+                form.reset();
+            });
+        });
+    </script>
+
+</body>
+</html>
